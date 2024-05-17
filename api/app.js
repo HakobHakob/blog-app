@@ -10,6 +10,10 @@ import logger from "morgan"
 const __filename = fileURLToPath(import.meta.url) // Get current file path
 const __dirname = path.dirname(__filename) // Derive directory path
 
+import homeRouter from "./routes/index.js"
+import userRoutes from "./routes/user.route.js"
+
+
 const app = express()
 // Handle requests for favicon.ico
 app.get("/favicon.ico", (req, res) => res.status(204))
@@ -34,7 +38,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"))
     }
   },
-//   origin:"*",
+  //   origin:"*",
   credentials: true, // Allow sending cookies from client to server
 }
 app.use(cors(corsOptions))
@@ -51,6 +55,9 @@ app.use(
 )
 
 app.use(express.static(path.join(__dirname, "public")))
+
+app.use("/api_v1/", homeRouter)
+app.use("/api_v1/user/", userRoutes)
 
 // Error handling middleware
 app.use((err, req, res, next) => {

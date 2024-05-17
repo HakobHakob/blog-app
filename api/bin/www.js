@@ -77,7 +77,6 @@ try {
     }
 
     const bind = typeof port === "string" ? "Pipe " + port : "Port " + port
-    console.log("test", bind)
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
