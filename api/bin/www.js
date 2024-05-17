@@ -2,10 +2,11 @@
 
 /**
  * Module dependencies.
-*/
+ */
 import dotenv from "dotenv"
 dotenv.config()
 import http from "node:http"
+import mongoose from "mongoose"
 import moment from "moment"
 import log from "../components/logger.js"
 import app from "../app.js"
@@ -13,16 +14,28 @@ import app from "../app.js"
 import createDebug from "debug"
 const debug = createDebug("api:server")
 
+const connect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO)
+    console.log("Connected to mongoDB.")
+  } catch (err) {
+    console.log("Connection failed")
+    throw err
+  }
+}
+
+mongoose.connection.on("disconnected", () => {
+  console.log("mongoDB disconnected!")
+})
 try {
   /**
    * Create HTTP server.
-  */
- const server = http.createServer(app)
- 
- /**
-  * Get port from environment and store in Express.
- */
-const port = normalizePort(process.env.PORT || "3000")
+   */
+  const server = http.createServer(app)
+  /**
+   * Get port from environment and store in Express.
+   */
+  const port = normalizePort(process.env.PORT || "3000")
   app.set("port", port)
   /**
    * Normalize a port into a number, string, or false.
@@ -34,12 +47,12 @@ const port = normalizePort(process.env.PORT || "3000")
       // named pipe
       return val
     }
-    
+
     if (port >= 0) {
       // port number
       return port
     }
-   
+
     return false
   }
 
@@ -47,7 +60,8 @@ const port = normalizePort(process.env.PORT || "3000")
    * Listen on provided port, on all network interfaces.
    */
 
-  server.listen(port,()=>{  
+  server.listen(port, () => {
+    connect()
     console.log(`Server is running on port ${port}!`)
   })
   server.on("error", onError)
@@ -63,7 +77,7 @@ const port = normalizePort(process.env.PORT || "3000")
     }
 
     const bind = typeof port === "string" ? "Pipe " + port : "Port " + port
-    console.log("test",bind) 
+    console.log("test", bind)
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
@@ -80,14 +94,14 @@ const port = normalizePort(process.env.PORT || "3000")
     }
   }
   /**
- * Event listener for HTTP server "listening" event.
- */
+   * Event listener for HTTP server "listening" event.
+   */
 
-function onListening() {
-  const addr = server.address()
-  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port
-  debug("Listening on " + bind)
-}
+  function onListening() {
+    const addr = server.address()
+    const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port
+    debug("Listening on " + bind)
+  }
 } catch (error) {
   console.error(error)
   setTimeout(() => {
@@ -97,5 +111,3 @@ function onListening() {
     )
   }, 1000)
 }
-
-
