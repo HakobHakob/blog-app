@@ -6,12 +6,13 @@ import cors from "cors"
 import fileUpload from "express-fileupload"
 import cookieParser from "cookie-parser"
 import logger from "morgan"
+import homeRouter from "./routes/index.js"
+import userRoutes from "./routes/user.route.js"
+import authRoutes from "./routes/auth.route.js"
 
 const __filename = fileURLToPath(import.meta.url) // Get current file path
 const __dirname = path.dirname(__filename) // Derive directory path
 
-import homeRouter from "./routes/index.js"
-import userRoutes from "./routes/user.route.js"
 
 
 const app = express()
@@ -57,7 +58,8 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")))
 
 app.use("/api_v1/", homeRouter)
-app.use("/api_v1/user/", userRoutes)
+app.use("/api_v1/user", userRoutes)
+app.use("/api_v1/auth", authRoutes)
 
 // Error handling middleware
 app.use((err, req, res, next) => {
