@@ -19,9 +19,12 @@ npx tailwindcss init -p
 
 - Additional installs
 
-```npm i react-router-dom
- npm i flowbite-react
- npm i -D tailwindcss
- npm i react-icons
+```
+npm i react-router-dom
+npm i flowbite-react
+npm i -D tailwindcss
+npm i react-icons
 npm i @tanstack/react-query
+npm install @reduxjs/toolkit react-redux
+npm i redux-persist
 ```
