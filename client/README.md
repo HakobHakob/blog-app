@@ -27,4 +27,5 @@ npm i react-icons
 npm i @tanstack/react-query
 npm install @reduxjs/toolkit react-redux
 npm i redux-persist
+npm install firebase
 ```

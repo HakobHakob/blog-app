@@ -2,7 +2,11 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import bcryptjs from "bcryptjs"
 import User from "../models/user.model.js"
-import { errorHandler } from "../utils/error.js"
+import {
+  errorHandler,
+  generateRandomPassword,
+  getRandomName,
+} from "../utils/error.js"
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body
@@ -34,7 +38,6 @@ export const signup = async (req, res, next) => {
 
 export const signin = async (req, res, next) => {
   const { email, password } = req.body
-  console.log("object", req.body)
 
   if (!email || !password || email === "" || password === "") {
     next(errorHandler(400, "All fields are required"))
@@ -58,6 +61,45 @@ export const signin = async (req, res, next) => {
       .status(200)
       .cookie("access_token", token, { httpOnly: true })
       .json(otherDetails)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const google = async (req, res, next) => {
+  const { email, name, googlePhotoUrl } = req.body
+
+  try {
+    const user = await User.findOne({ email })
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+      const { password, ...userOtherDetails } = user._doc
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(userOtherDetails)
+    } else {
+      const randomPass = generateRandomPassword()
+      const hashedPassword = bcryptjs.hashSync(randomPass, 10)
+      const newUser = new User({
+        //John Travolta => johntravolta1234
+        username: name.toLowerCase().split(" ").join("") + getRandomName(),
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      })
+      await newUser.save()
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET)
+      const { password, ...userOtherDetails } = newUser._doc
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(userOtherDetails)
+    }
   } catch (error) {
     next(error)
   }
