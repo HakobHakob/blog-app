@@ -10,7 +10,6 @@ export const Header = () => {
   const path = useLocation().pathname
   const { currentUser } = useSelector((state) => state.user)
   const {theme} = useSelector( state =>  state.theme)
-  console.log("teheme", theme)
   const dispatch = useDispatch()
   return (
     <Navbar className="border-b-2">
