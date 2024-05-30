@@ -1,11 +1,29 @@
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
+import { DashSidebar } from "../components/DashSidebar"
+import { DashProfile } from "../components/DashProfile"
 
- const Dashboard = () => {
-    return (
-      <div>
-        Dashboard
+const Dashboard = () => {
+  const location = useLocation()
+  const [dashboardTab, setDashboardTab] = useState("")
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search)
+    const tabFromURL = urlParams.get("tab")
+    if (tabFromURL) {
+      setDashboardTab(tabFromURL)
+    }
+  }, [location.search])
+  return (
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="md:w-56">
+      {/* Sidebar */}
+        <DashSidebar />
       </div>
-    )
-  }
-  
-  
-  export default Dashboard
+      {/* Profile... */}
+
+      {dashboardTab === "profile" && <DashProfile />}
+      </div>
+  )
+}
+
+export default Dashboard
