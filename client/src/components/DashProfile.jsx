@@ -1,5 +1,5 @@
 import { Alert, Button, TextInput } from "flowbite-react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import {
   getDownloadURL,
@@ -32,9 +32,9 @@ export const DashProfile = () => {
     if (imgFile) {
       uploadImg()
     }
-  }, [imgFile])
+  }, [imgFile, uploadImg])
 
-  const uploadImg = async () => {
+  const uploadImg = useCallback(async () => {
     // service firebase.storage {
     //   match /b/{bucket}/o {
     //     match /{allPaths=**} {
@@ -73,7 +73,7 @@ export const DashProfile = () => {
         })
       }
     )
-  }
+  }, [imgFile])
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
