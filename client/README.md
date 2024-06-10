@@ -25,7 +25,8 @@ npm i flowbite-react
 npm i -D tailwindcss
 npm i react-icons
 npm i @tanstack/react-query
-npm install @reduxjs/toolkit react-redux
+npm i @reduxjs/toolkit react-redux
 npm i redux-persist
-npm install firebase
+npm i firebase
+npm i --save react-circular-progressbar
 ```
