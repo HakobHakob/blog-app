@@ -17,7 +17,7 @@ import {
 } from "../redux/user/userSlice"
 
 export const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser, loading } = useSelector((state) => state.user)
   const [imgFile, setImgFile] = useState(null)
   const [imgFileURL, setImgFileURL] = useState(null)
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null)
@@ -97,8 +97,10 @@ export const DashProfile = () => {
 
   const submitForm = async (e) => {
     e.preventDefault()
+
     setUpdateUserError(null)
     setUpdateUserSuccess(null)
+
     if (Object.keys(formData).length === 0) {
       setUpdateUserError("No changes made")
       return
@@ -199,7 +201,7 @@ export const DashProfile = () => {
           placeholder="password"
           onChange={updateUserData}
         />
-        <Button type="submit " gradientDuoTone="purpleToBlue" outline>
+        <Button type="submit " gradientDuoTone="purpleToBlue" outline  disabled={loading || imageFileUploading}>
           Update
         </Button>
         <div className=" flex justify-between mt-5">

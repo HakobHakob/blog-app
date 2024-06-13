@@ -8,6 +8,7 @@ import {
   getRandomName,
 } from "../utils/error.js"
 
+/*Create or sign up user */
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body
 
