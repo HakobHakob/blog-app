@@ -29,4 +29,5 @@ npm i @reduxjs/toolkit react-redux
 npm i redux-persist
 npm i firebase
 npm i --save react-circular-progressbar
+npm install react-quilljs quill
 ```

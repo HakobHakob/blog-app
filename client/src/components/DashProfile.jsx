@@ -1,4 +1,5 @@
 import { Alert, Button, Modal, TextInput } from "flowbite-react"
+import { Link } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -248,8 +249,19 @@ export const DashProfile = () => {
           outline
           disabled={loading || imageFileUploading}
         >
-          Update
+          {loading ? "Loading..." : "Update"}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              type="button"
+              gradientDuoTone="purpleToPink"
+              className="w-full"
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
         <div className=" flex justify-between mt-5">
           <span
             onClick={() => setShowModal(true)}
