@@ -62,7 +62,7 @@ export const DashProfile = () => {
         //   }
         // }
         setImageFileUploading(true)
-        setImageFileUploadError(null)
+        setImageFileUploadError(null)  // If there is not error, we should clear the error and set the null
         const storage = getStorage(app)
         const fileName = new Date().getTime() + imgFile.name
         const storageRef = ref(storage, fileName)
