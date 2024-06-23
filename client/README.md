@@ -30,4 +30,6 @@ npm i redux-persist
 npm i firebase
 npm i --save react-circular-progressbar
 npm install react-quilljs quill
+npm install prop-types
+
 ```

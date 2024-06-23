@@ -8,8 +8,8 @@ import Projects from "./pages/Projects"
 import { Header } from "./components/Header"
 import { FooterComponent } from "./components/Footer"
 import { PrivateRoute } from "./components/PrivateRoute"
-import { CreatePost } from "./pages/CreatePost"
 import { OnlyAdminPrivateRoute } from "./components/PrivateRoute copy"
+import { CreatePost } from "./pages/CreatePost"
 
 const App = () => {
   return (
