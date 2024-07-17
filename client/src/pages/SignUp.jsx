@@ -20,17 +20,17 @@ const SignUp = () => {
     try {
       setLoading(true)
       setErrorMessage(null)
-      const result = await fetch("/api_v1/auth/signup", {
+      const res = await fetch("/api_v1/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
-      const data = await result.json()
+      const data = await res.json()
       if (data.success === false) {
         return setErrorMessage(data.message)
       }
       setLoading(false)
-      if (result.ok) {
+      if (res.ok) {
         navigate("/sign-in")
       }
     } catch (error) {

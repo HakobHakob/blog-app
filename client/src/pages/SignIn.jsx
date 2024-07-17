@@ -25,16 +25,16 @@ const SignIn = () => {
     }
     try {
       dispatch(signInStart())
-      const result = await fetch("/api_v1/auth/signin", {
+      const res = await fetch("/api_v1/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
-      const data = await result.json()
+      const data = await res.json()
       if (data.success === false) {
         dispatch(signInFailure(data.message))
       }
-      if (result.ok) {
+      if (res.ok) {
         dispatch(signInSuccess(data))
         navigate("/")
       }

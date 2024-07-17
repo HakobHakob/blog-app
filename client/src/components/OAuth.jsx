@@ -16,7 +16,7 @@ export const OAuth = () => {
     // Ogtagorcm enq tryCatch-@ popUp window-@ bacelu hamar
     try {
       const resultsFromGoogle = await signInWithPopup(auth, provider)
-      const result = await fetch("/api_v1/auth/google", {
+      const res = await fetch("/api_v1/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -25,8 +25,8 @@ export const OAuth = () => {
           googlePhotoUrl: resultsFromGoogle.user.photoURL,
         }),
       })
-      const data = await result.json()
-      if (result.ok) {
+      const data = await res.json()
+      if (res.ok) {
         dispatch(signInSuccess(data))
         navigate("/")
       }

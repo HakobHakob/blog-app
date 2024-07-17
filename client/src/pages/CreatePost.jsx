@@ -70,19 +70,19 @@ export const CreatePost = () => {
   const submitFormData = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch("/api_v1/post/create", {
+      const res = await fetch("/api_v1/post/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       })
-      const data = await response.json()
-      if (!response.ok) {
+      const data = await res.json()
+      if (!res.ok) {
         setPublishError(data.message)
         return
       }
-      if (response.ok) {
+      if (res.ok) {
         setPublishError(null)
         navigate(`/post/${data.slug}`)
       }
