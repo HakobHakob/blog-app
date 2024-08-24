@@ -3,7 +3,7 @@ import "quill/dist/quill.snow.css"
 import PropTypes from "prop-types"
 import { memo, useEffect } from "react"
 
-const PostContent = ({ changePostContent }) => {
+const PostContent = ({ changePostContent, content }) => {
   const { quill, quillRef } = useQuill({
     modules: {
       toolbar: [
@@ -28,12 +28,14 @@ const PostContent = ({ changePostContent }) => {
   })
 
   useEffect(() => {
-    if (quill) {
+    if (quill && content) {
+      quill.root.innerHTML = content || ""
+      // Listen for text changes and update the parent component
       quill.on("text-change", () => {
         changePostContent(quill.root.innerHTML)
       })
     }
-  }, [changePostContent, quill])
+  }, [quill, content, changePostContent])
 
   return (
     <div className="h-72 pb-12">
@@ -44,6 +46,7 @@ const PostContent = ({ changePostContent }) => {
 
 PostContent.propTypes = {
   changePostContent: PropTypes.func.isRequired,
+  content: PropTypes.string.isRequired,
 }
 
 // Adding display name to the memoized component

@@ -42,62 +42,61 @@ export const DashProfile = () => {
 
   const changeImage = (e) => {
     const file = e.target.files[0]
-
     if (file) {
       setImgFile(file)
       setImgFileURL(URL.createObjectURL(file))
     }
   }
   useEffect(() => {
-    if (imgFile) {
-      const uploadImage = async () => {
-        // service firebase.storage {
-        //   match /b/{bucket}/o {
-        //     match /{allPaths=**} {
-        //       allow read;
-        //       allow write: if
-        //       request.resource.size < 2 * 1024 * 1024 &&
-        //       request.resource.contentType.matches('image/.*')
-        //     }
-        //   }
-        // }
-        setImageFileUploading(true)
-        setImageFileUploadError(null)  // If there is not error, we should clear the error and set the null
-        const storage = getStorage(app)
-        const fileName = new Date().getTime() + imgFile.name
-        const storageRef = ref(storage, fileName)
-        const uploadTask = uploadBytesResumable(storageRef, imgFile)
-        uploadTask.on(
-          "state_changed",
+    const uploadImage = async () => {
+      // service firebase.storage {
+      //   match /b/{bucket}/o {
+      //     match /{allPaths=**} {
+      //       allow read;
+      //       allow write: if
+      //       request.resource.size < 2 * 1024 * 1024 &&
+      //       request.resource.contentType.matches('image/.*')
+      //     }
+      //   }
+      // }
+      setImageFileUploading(true)
+      setImageFileUploadError(null) // If there is not error, we should clear the error and set the null
+      const storage = getStorage(app)
+      const fileName = new Date().getTime() + imgFile.name
+      const storageRef = ref(storage, fileName)
+      const uploadTask = uploadBytesResumable(storageRef, imgFile)
+      uploadTask.on(
+        "state_changed",
 
-          // File upload progress
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            //toFixed(digits) => The number of digits to appear after the decimal point
-            setImageFileUploadProgress(progress.toFixed(0))
-          },
-          () => {
-            setImageFileUploadError(
-              "Could not upload image (File must be less than 2MB)"
-            )
-            setImageFileUploadProgress(null)
-            setImgFile(null)
-            setImgFileURL(null)
+        // File upload progress
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          //toFixed(digits) => The number of digits to appear after the decimal point
+          setImageFileUploadProgress(progress.toFixed(0))
+        },
+        () => {
+          setImageFileUploadError(
+            "Could not upload image (File must be less than 2MB)"
+          )
+          setImageFileUploadProgress(null)
+          setImgFile(null)
+          setImgFileURL(null)
+          setImageFileUploading(false)
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImgFileURL(downloadURL)
+            setFormData((prevData) => ({
+              ...prevData,
+              profilePicture: downloadURL,
+            }))
             setImageFileUploading(false)
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setImgFileURL(downloadURL)
-              setFormData((prevData) => ({
-                ...prevData,
-                profilePicture: downloadURL,
-              }))
-              setImageFileUploading(false)
-            })
-          }
-        )
-      }
+          })
+        }
+      )
+    }
+    if (imgFile) {
       uploadImage()
     }
   }, [imgFile])
