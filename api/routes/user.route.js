@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteUser, signOut, updateUser } from "../controllers/user.controller.js"
+import { deleteUser, getUsers, signOut, updateUser } from "../controllers/user.controller.js"
 import { verifyToken } from "../utils/verifyUser.js"
 const router = express.Router()
 
@@ -11,5 +11,8 @@ router.delete("/delete/:userId",verifyToken,deleteUser )
 
 /*Sign out route */
 router.post("/signuot", signOut)
+
+/*Get all users data */
+router.get("/getusers", verifyToken, getUsers)
 
 export default router

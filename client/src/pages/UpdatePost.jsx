@@ -133,13 +133,13 @@ export const UpdatePost = () => {
             onChange={(e) =>
               setFormData({ ...formData, title: e.target.value })
             }
-            value={formData.title}
+            value={formData.title || ""}
           />
           <Select
             onChange={(e) =>
               setFormData({ ...formData, category: e.target.value })
             }
-            value={formData.category}
+            value={formData.category || "Select a category"}
           >
             <option value="uncategorized">Select a category</option>
             <option value="javascript">Javascript</option>
@@ -184,7 +184,7 @@ export const UpdatePost = () => {
           />
         )}
         <CreatePostContent
-          changePostContent={changePostContent}
+          changePostContent={changePostContent || ""}
           content={formData.content}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">

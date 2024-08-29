@@ -46,8 +46,9 @@ const PostContent = ({ changePostContent, content }) => {
 
 PostContent.propTypes = {
   changePostContent: PropTypes.func.isRequired,
-  content: PropTypes.string.isRequired,
+  content: PropTypes.string,
 }
+
 
 // Adding display name to the memoized component
 const CreatePostContent = memo(PostContent)
