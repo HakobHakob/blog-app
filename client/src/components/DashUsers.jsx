@@ -31,7 +31,7 @@ export const DashUsers = () => {
     }
   }, [currentUser._id, currentUser.isAdmin])
 
-  const showMorePosts = async () => {
+  const showMoreUsers = async () => {
     const startIndex = users.length
     try {
       const res = await fetch(`/api_v1/user/getusers?startIndex=${startIndex}`)
@@ -48,19 +48,16 @@ export const DashUsers = () => {
   }
 
   const deleteCurrentUser = async () => {
-    setShowModal(false)
     try {
-      const res = await fetch(
-        `/api_v1/user/deleteuser/${userIdToDelete}/${currentUser._id}`,
-        {
-          method: "DELETE",
-        }
-      )
+      const res = await fetch(`/api_v1/user/delete/${userIdToDelete}`, {
+        method: "DELETE",
+      })
       const data = await res.json()
       if (!res.ok) {
         console.log(data.message)
       } else {
-        setUsers((prev) => prev.filter((post) => post._id !== userIdToDelete))
+        setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete))
+        setShowModal(false)
       }
     } catch (error) {
       console.log(error.message)
@@ -119,7 +116,7 @@ export const DashUsers = () => {
           </Table>
           {showMore && (
             <button
-              onClick={showMorePosts}
+              onClick={showMoreUsers}
               className="w-full text-teal-500 self-center text-sm py-7"
             >
               Show more
