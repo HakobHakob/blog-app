@@ -12,6 +12,7 @@ const PostContent = ({ changePostContent, content }) => {
         [{ list: "ordered" }, { list: "bullet" }],
         ["link"],
         [{ color: [] }, { background: [] }],
+        [{ align: [] }],
       ],
     },
     formats: [
@@ -24,15 +25,30 @@ const PostContent = ({ changePostContent, content }) => {
       "link",
       "color",
       "background",
+      "align",
     ],
   })
 
   useEffect(() => {
-    if (quill && content) {
-      quill.root.innerHTML = content || ""
-      // Listen for text changes and update the parent component
+    if (quill) {
+      // Only update the content if the incoming content is different
+      if (content && quill.root.innerHTML !== content) {
+        // Store current cursor position
+        const currentSelection = quill.getSelection()
+
+        // Update the content in Quill editor
+        quill.root.innerHTML = content || ""
+
+        // Restore the previous cursor position after content update
+        if (currentSelection) {
+          quill.setSelection(currentSelection)
+        }
+      }
+
+      // Listen for text changes in the Quill editor
       quill.on("text-change", () => {
-        changePostContent(quill.root.innerHTML)
+        const updatedContent = quill.root.innerHTML
+        changePostContent(updatedContent) // Send updated content to parent component
       })
     }
   }, [quill, content, changePostContent])
@@ -48,7 +64,6 @@ PostContent.propTypes = {
   changePostContent: PropTypes.func.isRequired,
   content: PropTypes.string,
 }
-
 
 // Adding display name to the memoized component
 const CreatePostContent = memo(PostContent)

@@ -32,5 +32,7 @@ npm i --save react-circular-progressbar
 npm install react-quilljs quill
 npm install prop-types
 npm install --save-dev tailwind-scrollbar
+npm install styled-components
+
 
 ```

@@ -183,6 +183,12 @@ export const UpdatePost = () => {
             className="w-full h-72 object-cover"
           />
         )}
+        <p className="italic text-xs text-justify">
+          * If you want to turn any word or several words into a heading,
+          separate it from the main text by placing it on a separate line,
+          pressing the enter button once before and after the word or words, and
+          then select the word or words and choose the type of heading you want.
+        </p>
         <CreatePostContent
           changePostContent={changePostContent || ""}
           content={formData.content}

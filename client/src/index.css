@@ -9,3 +9,9 @@ body {
 .ql-toolbar {
   font-size: 1.05rem;
 }
+
+.dark .post-content a {
+  color: red;
+}
+
+
