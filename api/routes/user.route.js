@@ -1,6 +1,7 @@
 import express from "express"
 import {
   deleteUser,
+  getUser,
   getUsers,
   signOut,
   updateUser,
@@ -17,7 +18,10 @@ router.delete("/delete/:userId", verifyToken, deleteUser)
 /*Sign out route */
 router.post("/signout", signOut)
 
-/*Get all users data */
+/*Get all users data for admin*/
 router.get("/getusers", verifyToken, getUsers)
+
+/*Get all users data for everone*/
+router.get("/:userId", getUser)
 
 export default router

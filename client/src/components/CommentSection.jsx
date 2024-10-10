@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import { Alert, Button, Textarea } from "flowbite-react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import {
@@ -8,6 +8,7 @@ import {
   addCommentSuccess,
   addCommentFailure,
 } from "../redux/comment/commentSlice"
+import { PostComment } from "./PostComment"
 
 export const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user)
@@ -15,13 +16,13 @@ export const CommentSection = ({ postId }) => {
     (state) => state.comment
   )
   const [commentErr, setCommentErr] = useState("")
+  const [postComments, setPostComments] = useState([])
 
   const dispatch = useDispatch()
   const textAreaRef = useRef(null)
   const charCountDisplayRef = useRef(null)
 
   const changeCharacterCount = (count) => 200 - count
-
   const changeValueRealTime = (value) => {
     if (commentErr && value) {
       setCommentErr("")
@@ -76,6 +77,7 @@ export const CommentSection = ({ postId }) => {
         if (charCountDisplayRef.current) {
           charCountDisplayRef.current.textContent = "200 characters remaining"
         }
+        setPostComments([data, ...postComments])
       }
     } catch (error) {
       dispatch(
@@ -85,6 +87,20 @@ export const CommentSection = ({ postId }) => {
     }
   }
 
+  useEffect(() => {
+    const getPostComments = async () => {
+      try {
+        const res = await fetch(`/api_v1/comment/getPostComments/${postId}`)
+        if (res.ok) {
+          const data = await res.json()
+          setPostComments(data)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getPostComments()
+  }, [postId])
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -136,6 +152,21 @@ export const CommentSection = ({ postId }) => {
             </Alert>
           )}
         </form>
+      )}
+      {postComments === 0 ? (
+        <p className="text-sm my-5">No comments yet!</p>
+      ) : (
+        <>
+          <div className="text-sm my-5 flex items-center gap-1">
+            <p>Comments</p>
+            <div className="border border-gray-400 py-1 px-2 rounded-sm">
+              <p>{postComments.length}</p>
+            </div>
+          </div>
+          {postComments.map((postComment) => (
+            <PostComment key={postComment._id} postComment={postComment} />
+          ))}
+        </>
       )}
     </div>
   )

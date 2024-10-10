@@ -29,10 +29,11 @@ npm i @reduxjs/toolkit react-redux
 npm i redux-persist
 npm i firebase
 npm i --save react-circular-progressbar
-npm install react-quilljs quill
-npm install prop-types
-npm install --save-dev tailwind-scrollbar
-npm install styled-components
+npm i react-quilljs quill
+npm i prop-types
+npm i --save-dev tailwind-scrollbar
+npm i styled-components
+npm i moment
 
 
 ```
