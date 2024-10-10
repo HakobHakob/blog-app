@@ -15,7 +15,7 @@ export const Header = () => {
 
   const handleSignOut = async () => {
     try {
-      const res = await fetch("/api_v1/user/signuot", {
+      const res = await fetch("/api_v1/user/signout", {
         method: "POST",
       })
       const data = await res.json()

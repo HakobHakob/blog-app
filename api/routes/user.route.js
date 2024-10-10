@@ -15,7 +15,7 @@ router.put("/update/:userId", verifyToken, updateUser)
 router.delete("/delete/:userId", verifyToken, deleteUser)
 
 /*Sign out route */
-router.post("/signuot", signOut)
+router.post("/signout", signOut)
 
 /*Get all users data */
 router.get("/getusers", verifyToken, getUsers)
