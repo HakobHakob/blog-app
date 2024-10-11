@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 import { Alert, Button, Textarea } from "flowbite-react"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   addCommentStart,
   addCommentSuccess,
@@ -21,6 +21,7 @@ export const CommentSection = ({ postId }) => {
   const dispatch = useDispatch()
   const textAreaRef = useRef(null)
   const charCountDisplayRef = useRef(null)
+  const navigate = useNavigate()
 
   const changeCharacterCount = (count) => 200 - count
   const changeValueRealTime = (value) => {
@@ -69,6 +70,7 @@ export const CommentSection = ({ postId }) => {
         setCommentErr(` Failed to add content: Comment content is required.`)
       }
       const data = await res.json()
+      console.log("comment data", data)
 
       if (res.ok) {
         setCommentErr("")
@@ -101,6 +103,38 @@ export const CommentSection = ({ postId }) => {
     }
     getPostComments()
   }, [postId])
+
+  const likeComment = async (commentId) => {
+    try {
+      if (!currentUser) {
+        navigate("/sign-in")
+        return
+      }
+      
+      const res = await fetch(`/api_v1/comment/likeComment/${commentId}`, {
+        method: "PUT",
+      })
+      if (res.ok) {
+        const data = await res.json()
+        
+        setPostComments(
+          postComments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.likes.length,
+                }
+              : comment
+          )
+        )
+      }
+    } catch (error) {
+      console.error(error)
+     
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -164,7 +198,11 @@ export const CommentSection = ({ postId }) => {
             </div>
           </div>
           {postComments.map((postComment) => (
-            <PostComment key={postComment._id} postComment={postComment} />
+            <PostComment
+              key={postComment._id}
+              postComment={postComment}
+              onLike={likeComment}
+            />
           ))}
         </>
       )}

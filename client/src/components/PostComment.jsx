@@ -1,10 +1,12 @@
 import PropTypes from "prop-types"
 import moment from "moment"
 import { useEffect, useState } from "react"
+import { FaThumbsUp } from "react-icons/fa"
+import { useSelector } from "react-redux"
 
-export const PostComment = ({ postComment }) => {
+export const PostComment = ({ postComment, onLike }) => {
   const [user, setUser] = useState({})
-  console.log("user", user)
+  const { currentUser } = useSelector((state) => state.user)
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -41,6 +43,25 @@ export const PostComment = ({ postComment }) => {
           </span>
         </div>
         <p className="text-gray-500 pb-5">{postComment.content}</p>
+        <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">
+          <button
+            type="button"
+            onClick={() => onLike(postComment._id)}
+            className={`text-gray-400 hover:text-blue-500 ${
+              currentUser &&
+              postComment.likes.includes(currentUser._id) &&
+              "!text-blue-500"
+            }`}
+          >
+            <FaThumbsUp className="text-sm" />
+          </button>
+          <p className="text-gray-500">
+            {postComment.numberOfLikes > 0 &&
+              postComment.numberOfLikes +
+                " " +
+                (postComment.numberOfLikes === 1 ? "like" : "likes")}
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -51,6 +72,9 @@ PostComment.propTypes = {
     userId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     content: PropTypes.string,
-    // We can add other properties of postComment here as needed
+    _id: PropTypes.string.isRequired,
+    likes: PropTypes.arrayOf(PropTypes.string).isRequired,
+    numberOfLikes: PropTypes.number,
   }).isRequired,
+  onLike: PropTypes.func.isRequired,
 }
