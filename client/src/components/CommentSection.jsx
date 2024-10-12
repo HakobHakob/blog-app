@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import { Alert, Button, Textarea } from "flowbite-react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import {
@@ -12,9 +12,7 @@ import { PostComment } from "./PostComment"
 
 export const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user)
-  const { currentComment, loading, commentError } = useSelector(
-    (state) => state.comment
-  )
+  const { commentError } = useSelector((state) => state.comment)
   const [commentErr, setCommentErr] = useState("")
   const [postComments, setPostComments] = useState([])
 
@@ -104,36 +102,51 @@ export const CommentSection = ({ postId }) => {
     getPostComments()
   }, [postId])
 
-  const likeComment = async (commentId) => {
-    try {
-      if (!currentUser) {
-        navigate("/sign-in")
-        return
-      }
-      
-      const res = await fetch(`/api_v1/comment/likeComment/${commentId}`, {
-        method: "PUT",
-      })
-      if (res.ok) {
-        const data = await res.json()
-        
-        setPostComments(
-          postComments.map((comment) =>
-            comment._id === commentId
-              ? {
-                  ...comment,
-                  likes: data.likes,
-                  numberOfLikes: data.likes.length,
-                }
-              : comment
+  const likeComment = useCallback(
+    async (commentId) => {
+      try {
+        if (!currentUser) {
+          navigate("/sign-in")
+          return
+        }
+
+        const res = await fetch(`/api_v1/comment/likeComment/${commentId}`, {
+          method: "PUT",
+        })
+        if (res.ok) {
+          const data = await res.json()
+
+          setPostComments(
+            postComments.map((comment) =>
+              comment._id === commentId
+                ? {
+                    ...comment,
+                    likes: data.likes,
+                    numberOfLikes: data.likes.length,
+                  }
+                : comment
+            )
           )
-        )
+        }
+      } catch (error) {
+        console.error(error)
       }
-    } catch (error) {
-      console.error(error)
-     
-    }
-  }
+    },
+    [currentUser, navigate, postComments]
+  )
+
+  const editPostComment = useCallback(
+    async (comment, editedContent) => {
+      setPostComments(
+        postComments.map((postCom) =>
+          postCom._id === comment._id
+            ? { ...postCom, content: editedContent }
+            : postCom
+        )
+      )
+    },
+    [postComments]
+  )
 
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
@@ -202,6 +215,7 @@ export const CommentSection = ({ postId }) => {
               key={postComment._id}
               postComment={postComment}
               onLike={likeComment}
+              onEdit={editPostComment}
             />
           ))}
         </>
