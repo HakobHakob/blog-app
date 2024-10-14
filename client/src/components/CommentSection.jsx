@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import { Alert, Button, Textarea } from "flowbite-react"
+import { Alert, Button, Modal, Textarea } from "flowbite-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
@@ -7,14 +7,20 @@ import {
   addCommentStart,
   addCommentSuccess,
   addCommentFailure,
+  deleteCommentStart,
+  deleteCommentSuccess,
+  deleteCommentFailure,
 } from "../redux/comment/commentSlice"
 import { PostComment } from "./PostComment"
+import { HiOutlineExclamationCircle } from "react-icons/hi"
 
 export const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user)
   const { commentError } = useSelector((state) => state.comment)
   const [commentErr, setCommentErr] = useState("")
   const [postComments, setPostComments] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [commentToDelete, setCommentToDelete] = useState(null)
 
   const dispatch = useDispatch()
   const textAreaRef = useRef(null)
@@ -68,7 +74,6 @@ export const CommentSection = ({ postId }) => {
         setCommentErr(` Failed to add content: Comment content is required.`)
       }
       const data = await res.json()
-      console.log("comment data", data)
 
       if (res.ok) {
         setCommentErr("")
@@ -148,6 +153,38 @@ export const CommentSection = ({ postId }) => {
     [postComments]
   )
 
+  const deleteComment = useCallback(
+    async (commentId) => {
+      setShowModal(false)
+      try {
+        dispatch(deleteCommentStart())
+
+        if (!currentUser) {
+          navigate("/sign-in")
+          return
+        }
+
+        const res = await fetch(`/api_v1/comment/deleteComment/${commentId}`, {
+          method: "DELETE",
+        })
+
+        if (res.ok) {
+          setPostComments(
+            postComments.filter((postComment) => postComment._id !== commentId)
+          )
+          dispatch(deleteCommentSuccess()) 
+        } else {
+          const errorData = await res.json()
+          dispatch(deleteCommentFailure(errorData)) 
+        }
+      } catch (error) {
+        console.error(error)
+        dispatch(deleteCommentFailure(error)) 
+      }
+    },
+    [currentUser, dispatch, navigate, postComments]
+  )
+
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -216,10 +253,41 @@ export const CommentSection = ({ postId }) => {
               postComment={postComment}
               onLike={likeComment}
               onEdit={editPostComment}
+              onDeleteComment={(commentId) => {
+                setShowModal(true)
+                setCommentToDelete(commentId)
+              }}
             />
           ))}
         </>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center ">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this pcommentost?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button
+                color="failure"
+                onClick={() => deleteComment(commentToDelete)}
+              >
+                Yes, I&apos;m sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No,cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
