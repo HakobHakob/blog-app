@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  height: 100vh;
+}
+
+.ql-toolbar {
+  font-size: 1.05rem;
+}
+
+.dark .post-content a {
+  color: red;
+}
+
+
